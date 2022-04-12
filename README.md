@@ -34,6 +34,10 @@ return [
         'base_url' => env('IP_REGISTRY_URL', 'https://api.ipregistry.co'),
         'key' => env('IP_REGISTRY_KEY'),
     ],
+    'ip-stack' => [ // Credentials for the ip stack API
+        'base_url' => env('IP_STACK_URL', 'https://api.ipstack.com'),
+        'key' => env('IP_STACK_KEY'),
+    ],
     'cache_ttl' => DateInterval::createFromDateString('2 months'), // Cache TTL for the geocoder services.
 ];
 ```
@@ -42,12 +46,15 @@ return [
 Configure the package with the config file. After that the package can be used like this.
 
 ```php
-UnlimitedGeolocation::getGeolocation($request)?->countryCode
+$location = UnlimitedGeolocation::getGeolocation($request);
+
+// { countryCode: "NL", timeZone: "Europe/Amsterdam" }
 ````
 
 ## Supported services
 - [Cloudflare IP geolocation](https://support.cloudflare.com/hc/en-us/articles/200168236-Configuring-Cloudflare-IP-Geolocation)
-- [IP Registry](https://ipregistry.co/)
+- [ipregistry](https://ipregistry.co/)
+- [ipstack](https://ipstack.com)
 
 ## Contributing
 You can add a geocoder by creating a class in the `src/GeoLocators` folder that implements `GeoLocatorContract`.

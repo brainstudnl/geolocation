@@ -18,6 +18,7 @@ class GeoLocatorFactory
     {
         $service = match ($geoLocator) {
             GeoLocator::IpRegistry => IpRegistry::class,
+            GeoLocator::IpStack => IpStack::class,
         };
 
         try {

@@ -45,7 +45,20 @@ class Geolocation
     public static function fromIpRegistry(stdClass $data): Geolocation
     {
         $countryCode = $data->location?->country?->code;
-        $timeZone = $data->time_zone?->id;
+        $timeZone = property_exists($data, 'time_zone') ? $data->time_zone?->id : null;
+
+        return new Geolocation($countryCode, $timeZone);
+    }
+
+    /**
+     * Convert IpRegistry data to Geolocation
+     * @param stdClass $data
+     * @return Geolocation
+     */
+    public static function fromIpStack(stdClass $data): Geolocation
+    {
+        $countryCode = $data->country_code;
+        $timeZone = property_exists($data, 'time_zone') ? $data->time_zone?->id : null;
 
         return new Geolocation($countryCode, $timeZone);
     }

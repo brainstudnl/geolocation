@@ -8,4 +8,5 @@ namespace Brainstud\UnlimitedGeolocation\GeoLocators;
 enum GeoLocator
 {
     case IpRegistry;
+    case IpStack;
 }
