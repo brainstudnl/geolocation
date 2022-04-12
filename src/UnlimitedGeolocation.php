@@ -40,7 +40,10 @@ class UnlimitedGeolocation
             && is_string($value)
             && strlen($value) === 2
         ) {
-            return new Geolocation($value);
+            $location = Geolocation::fromCountryCode($value);
+            if ($location->isComplete()) {
+                return $location;
+            }
         }
 
         return null;
