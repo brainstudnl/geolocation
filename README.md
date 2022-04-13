@@ -1,4 +1,4 @@
-# Laravel Location
+# Laravel Geolocation
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/brainstud/geolocation.svg?style=flat-square)](https://packagist.org/packages/brainstud/geolocation)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/brainstud/geolocation/run-tests?label=tests)](https://github.com/brainstud/geolocation/actions?query=workflow%3Arun-tests+branch%3Amain)
