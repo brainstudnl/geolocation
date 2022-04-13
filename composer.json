@@ -1,12 +1,15 @@
 {
-    "name": "brainstud/unlimited-geolocation",
-    "description": "Get the geolocation of the request",
+    "name": "brainstud/geolocation",
+    "description": "A laravel package to get the country and timezone (geolocation) of the request",
     "keywords": [
         "brainstud",
         "laravel",
-        "unlimited-geolocation"
+        "geolocation",
+        "timezone",
+        "ip",
+        "ipgeo"
     ],
-    "homepage": "https://github.com/brainstud/unlimited-geolocation",
+    "homepage": "https://github.com/brainstud/geolocation",
     "license": "MIT",
     "authors": [
         {
@@ -35,13 +38,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Brainstud\\UnlimitedGeolocation\\": "src",
-            "Brainstud\\UnlimitedGeolocation\\Database\\Factories\\": "database/factories"
+            "Brainstud\\Geolocation\\": "src",
+            "Brainstud\\Geolocation\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Brainstud\\UnlimitedGeolocation\\Tests\\": "tests"
+            "Brainstud\\Geolocation\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -59,10 +62,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Brainstud\\UnlimitedGeolocation\\UnlimitedGeolocationServiceProvider"
+                "Brainstud\\Geolocation\\GeolocationServiceProvider"
             ],
             "aliases": {
-                "UnlimitedGeolocation": "Brainstud\\UnlimitedGeolocation\\Facades\\UnlimitedGeolocation"
+                "Geolocation": "Brainstud\\Geolocation\\Facades\\Geolocation"
             }
         }
     },

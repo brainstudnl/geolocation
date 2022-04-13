@@ -1,16 +1,18 @@
 <?php
 
-namespace Brainstud\UnlimitedGeolocation;
+namespace Brainstud\Geolocation;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class UnlimitedGeolocationServiceProvider extends PackageServiceProvider
+class GeolocationServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
         $package
-            ->name('unlimited-geolocation')
+            ->name('geolocation')
             ->hasConfigFile();
+
+        $this->app->bind('geolocation', fn () => new Geolocation());
     }
 }

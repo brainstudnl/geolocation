@@ -1,6 +1,6 @@
 <?php
 
-use Brainstud\UnlimitedGeolocation\GeoLocators\GeoLocator;
+use Brainstud\Geolocation\GeoLocators\GeoLocator;
 
 return [
     'header' => 'CF-IPCountry',

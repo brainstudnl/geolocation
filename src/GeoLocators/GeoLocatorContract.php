@@ -1,8 +1,8 @@
 <?php
 
-namespace Brainstud\UnlimitedGeolocation\GeoLocators;
+namespace Brainstud\Geolocation\GeoLocators;
 
-use Brainstud\UnlimitedGeolocation\Geolocation;
+use Brainstud\Geolocation\Location;
 use Exception;
 
 /**
@@ -13,8 +13,8 @@ interface GeoLocatorContract
     /**
      * Get the country code in ISO 3166-1 alpha-2 format.
      * @param string $ip
-     * @return Geolocation|null
+     * @return Location|null
      * @throws Exception
      */
-    public function getGeolocation(string $ip): ?Geolocation;
+    public function getLocation(string $ip): ?Location;
 }

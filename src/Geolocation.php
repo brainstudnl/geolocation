@@ -1,70 +1,88 @@
 <?php
 
-namespace Brainstud\UnlimitedGeolocation;
+namespace Brainstud\Geolocation;
 
-use DateTimeZone;
-use stdClass;
+use Brainstud\Geolocation\GeoLocators\GeoLocatorFactory;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
-/**
- * Geolocation.
- *
- * The geolocation data.
- */
 class Geolocation
 {
     /**
-     * @param string $countryCode The Country code in ISO 3166-1 alpha-2 format.
-     * @param ?string $timeZone The timezone
+     * Get the geolocation of a request.
+     *
+     * @param Request $request
+     * @return Location|null
      */
-    public function __construct(
-        public string $countryCode,
-        public ?string $timeZone = null
-    ) {
-    }
-
-    /**
-     * Get the geolocation data from a country code.
-     * @param string $countryCode
-     * @return Geolocation
-     */
-    public static function fromCountryCode(string $countryCode): Geolocation
+    public static function getLocation(Request $request): ?Location
     {
-        $timeZone = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, $countryCode);
-        if (count($timeZone) > 1) {
-            return new Geolocation($countryCode);
+        if ($country = self::getFromHeader($request)) {
+            return $country;
+        }
+        if ($country = self::getFromService($request)) {
+            return $country;
         }
 
-        return new Geolocation($countryCode, current($timeZone));
+        return null;
     }
 
     /**
-     * Convert IpRegistry data to Geolocation
-     * @param stdClass $data
-     * @return Geolocation
+     * Get the location from the configured header.
+     *
+     * @param Request $request
+     * @return Location|null
      */
-    public static function fromIpRegistry(stdClass $data): Geolocation
+    private static function getFromHeader(Request $request): ?Location
     {
-        $countryCode = $data->location?->country?->code;
-        $timeZone = property_exists($data, 'time_zone') ? $data->time_zone?->id : null;
+        if (($value = $request->header(config('geolocation.header')))
+            && is_string($value)
+            && strlen($value) === 2
+        ) {
+            $location = Location::fromCountryCode($value);
+            if ($location->isComplete()) {
+                return $location;
+            }
+        }
 
-        return new Geolocation($countryCode, $timeZone);
+        return null;
     }
 
     /**
-     * Convert IpRegistry data to Geolocation
-     * @param stdClass $data
-     * @return Geolocation
+     * Get the location from the configured IP service.
+     *
+     * @param Request $request
+     * @return Location|null
      */
-    public static function fromIpStack(stdClass $data): Geolocation
+    private static function getFromService(Request $request): ?Location
     {
-        $countryCode = $data->country_code;
-        $timeZone = property_exists($data, 'time_zone') ? $data->time_zone?->id : null;
+        if (! ($geocoder = config('geolocation.geocoder'))) {
+            return null;
+        }
 
-        return new Geolocation($countryCode, $timeZone);
-    }
+        $ip = $request->getClientIp();
 
-    public function isComplete(): bool
-    {
-        return $this->countryCode && $this->timeZone;
+        $cacheKey = "CountryCodeFromService::v1::$ip";
+        $cached = Cache::get($cacheKey, 'NOT_FOUND');
+        if ($cached !== 'NOT_FOUND') {
+            return $cached;
+        }
+
+        try {
+            $locator = GeoLocatorFactory::getHandler($geocoder);
+            $geolocation = $locator->getLocation($ip);
+            if ($ttl = config('geolocation.cache_ttl')) {
+                Cache::put($cacheKey, $geolocation, $ttl);
+            }
+
+            return $geolocation;
+        } catch (Exception $e) {
+            Log::error($e, [
+                'IP' => $ip,
+            ]);
+        }
+
+        return null;
     }
 }

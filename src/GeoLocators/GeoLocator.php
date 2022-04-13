@@ -1,6 +1,6 @@
 <?php
 
-namespace Brainstud\UnlimitedGeolocation\GeoLocators;
+namespace Brainstud\Geolocation\GeoLocators;
 
 /**
  * All available geo-locators.

@@ -1,8 +1,8 @@
 <?php
 
-namespace Brainstud\UnlimitedGeolocation\GeoLocators;
+namespace Brainstud\Geolocation\GeoLocators;
 
-use Brainstud\UnlimitedGeolocation\Geolocation;
+use Brainstud\Geolocation\Location;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
@@ -18,10 +18,10 @@ class IpRegistry implements GeoLocatorContract
         $this->client = new Client();
     }
 
-    public function getGeolocation(string $ip): ?Geolocation
+    public function getLocation(string $ip): ?Location
     {
-        if (! ($baseUrl = config('unlimited-geolocation.ip-registry.base_url'))
-            || ! ($apiKey = config('unlimited-geolocation.ip-registry.key'))
+        if (! ($baseUrl = config('geolocation.ip-registry.base_url'))
+            || ! ($apiKey = config('geolocation.ip-registry.key'))
         ) {
             return null;
         }
@@ -30,7 +30,7 @@ class IpRegistry implements GeoLocatorContract
             $res = $this->client->request('GET', "$baseUrl/$ip?key=$apiKey");
             $data = json_decode($res->getBody()->getContents());
 
-            return Geolocation::fromIpRegistry($data);
+            return Location::fromIpRegistry($data);
         } catch (RequestException $e) {
             if ($e->hasResponse() && $e->getResponse()->getStatusCode() === 400) {
                 return null;
